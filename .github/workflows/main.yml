@@ -1,8 +1,9 @@
+
 name: Daily Activity
 
 on:
   schedule:
-    - cron: "20 15 * * *"
+    - cron: "33 17 * * *"
   workflow_dispatch:
 
 permissions:
@@ -15,15 +16,24 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Update activity file
         run: |
-          date -u +"Activity updated on %Y-%m-%d at %H:%M UTC" > activity.txt
+          echo "Activity updated on $(date -u '+%Y-%m-%d %H:%M:%S UTC')" > activity.txt
 
-      - name: Commit and push changes
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add activity.txt
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
           git commit -m "Update daily activity"
-          git push
+          git push origin HEAD:main
