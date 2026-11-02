@@ -3,7 +3,7 @@ name: Daily Activity
 
 on:
   schedule:
-    - cron: "33 17 * * *"
+    - cron: "00 10 * * *"
   workflow_dispatch:
 
 permissions:
